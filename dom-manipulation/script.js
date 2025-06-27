@@ -45,7 +45,7 @@ function addQuote() {
     const newQuote = { text: quoteText, category: quoteCategory };
     quotes.push(newQuote);
     saveQuotes();
-    postQuoteToServer(newQuote);
+    postQuoteToServer(newQuote); // ✅ send to mock API
     alert('Quote added successfully!');
     document.getElementById('newQuoteText').value = '';
     document.getElementById('newQuoteCategory').value = '';
@@ -144,11 +144,13 @@ function showNotification(message) {
   setTimeout(() => note.remove(), 4000);
 }
 
+// ✅ Fetch from mock API
 async function fetchQuotesFromServer() {
   const res = await fetch('https://jsonplaceholder.typicode.com/posts');
   return await res.json();
 }
 
+// ✅ Post to mock API with correct Content-Type
 async function postQuoteToServer(quote) {
   try {
     await fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -159,7 +161,7 @@ async function postQuoteToServer(quote) {
         userId: 1,
       }),
       headers: {
-        'Content-type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json; charset=UTF-8', // ✅ هنا أصل المشكلة
       },
     });
   } catch (e) {
@@ -167,6 +169,7 @@ async function postQuoteToServer(quote) {
   }
 }
 
+// ✅ Sync from server and resolve conflicts
 async function syncQuotes() {
   try {
     const serverQuotes = await fetchQuotesFromServer();
@@ -193,11 +196,12 @@ async function syncQuotes() {
   }
 }
 
+// ✅ Events
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 
+// ✅ Init
 loadQuotes();
 createAddQuoteForm();
 populateCategories();
 showRandomQuote();
-
-setInterval(syncQuotes, 60000); // مزامنة كل دقيقة
+setInterval(syncQuotes, 60000);
